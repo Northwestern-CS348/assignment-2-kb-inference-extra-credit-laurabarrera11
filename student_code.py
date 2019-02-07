@@ -142,6 +142,79 @@ class KnowledgeBase(object):
         """
         ####################################################
         # Student code goes here
+        indent=0
+        explanation=""
+        if isinstance(fact_or_rule, Fact):
+            current_fact=None
+            current_fact=self._get_fact(fact_or_rule)
+            if(current_fact == None):
+                explanation="Fact is not in the KB"
+                return  explanation
+            else:
+                explanation+="fact: "+ str(current_fact.statement)
+                if current_fact.asserted:
+                    explanation += " ASSERTED"
+                explanation += '\n'
+                indent += 1
+                if len(current_fact.supported_by) > 0:
+                    for supportive in current_fact.supported_by:
+                        explanation += self.supported_helper(supportive, indent)
+                return explanation
+
+        elif isinstance(fact_or_rule, Rule):
+            current_rule = None
+            current_rule = self._get_rule(fact_or_rule)
+            if (current_rule == None):
+                explanation="Rule is not in the KB"
+                return explanation
+            else:
+                explanation += "rule: ("
+                for every_left in current_rule.lhs:
+                    explanation += str(every_left)
+                explanation += ") -> " + str(current_rule.rhs)
+                if current_rule.asserted:
+                    explanation += " ASSERTED"
+                explanation += '\n'
+                indent += 1
+                if len(current_rule.supported_by) > 0:
+                    for supportive in current_rule.supported_by:
+                        explanation += self.supported_helper(supportive, indent)
+                return explanation
+        else:
+            return False
+
+    def supported_helper(self, current_fact_or_rule, indent):
+        explanation =""
+        new_indent = indent
+        for i in range(new_indent):
+            explanation += "  "
+        explanation += "SUPPORTED BY" + '\n'
+        new_indent += 1
+        for i in range(new_indent):
+            explanation += "  "
+        explanation += "fact: "
+        explanation += str(current_fact_or_rule[0].statement)
+        if current_fact_or_rule[0].asserted:
+            explanation += " ASSERTED"
+        explanation += '\n'
+        if len(current_fact_or_rule[0].supported_by) > 0:
+            for every_support in current_fact_or_rule[0].supported_by:
+                explanation += self.supported_helper(every_support, new_indent+1)
+        for i in range(new_indent):
+            explanation += "  "
+        explanation += "rule: ("
+        explanation += str(current_fact_or_rule[1].lhs[0])
+        for every_left in current_fact_or_rule[1].lhs[1:]:
+            explanation += ", " +str(every_left)
+        explanation += ") -> " + str(current_fact_or_rule[1].rhs)
+        if current_fact_or_rule[1].asserted:
+            explanation += " ASSERTED"
+        explanation += '\n'
+
+        if len(current_fact_or_rule[1].supported_by) > 0:
+            for every_support in current_fact_or_rule[1].supported_by:
+                explanation += self.supported_helper(every_support, new_indent+1)
+        return explanation
 
 
 class InferenceEngine(object):
