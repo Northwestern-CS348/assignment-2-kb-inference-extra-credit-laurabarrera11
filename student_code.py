@@ -169,8 +169,9 @@ class KnowledgeBase(object):
                 return explanation
             else:
                 explanation += "rule: ("
-                for every_left in current_rule.lhs:
-                    explanation += str(every_left)
+                explanation += str(current_rule.lhs[0])
+                for every_left in current_rule.lhs[1:]:
+                    explanation += ", " + str(every_left)
                 explanation += ") -> " + str(current_rule.rhs)
                 if current_rule.asserted:
                     explanation += " ASSERTED"
