@@ -211,7 +211,6 @@ class KnowledgeBase(object):
         if current_fact_or_rule[1].asserted:
             explanation += " ASSERTED"
         explanation += '\n'
-
         if len(current_fact_or_rule[1].supported_by) > 0:
             for every_support in current_fact_or_rule[1].supported_by:
                 explanation += self.supported_helper(every_support, new_indent+1)
